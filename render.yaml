@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: mfft-detection-api
+    runtime: docker
+    dockerfilePath: Dockerfile.render
+    plan: free
+    region: oregon
+    envVars:
+      - key: MFFT_IMAGE_SIZE
+        value: "384"
+      - key: MFFT_VARIANT
+        value: "base"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+    healthCheckPath: /

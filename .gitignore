@@ -1,0 +1,87 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Model checkpoints — ignore new ones at every level (verify/, logo/, variant
+# dirs). Pilot demo checkpoints already tracked in git remain tracked.
+model/checkpoints/**/*.pt
+model/checkpoints/**/*.pth
+!model/checkpoints/production/*.pt
+
+# Large baseline checkpoints (>100MB — exceed GitHub limit)
+model/model/checkpoints/test/baselines_model/clip/
+model/model/checkpoints/test/baselines_model/vit_b_16/
+model/model/checkpoints/test/baselines_model/swin_t/
+
+# API keys
+.env
+**/.env
+**/.env.local
+!**/.env.example
+
+# Generated HF Space bundle (rebuilt by deploy_hf_space.py; contains checkpoints)
+hf_space/
+
+# Web
+web/node_modules/
+web/.next/
+web/out/
+
+# Dataset images (too large — 17 GB)
+dataset/images/
+dataset/metadata/**/*.csv
+dataset/metadata/**/*.json
+dataset/_archive/
+dataset/.env
+
+# Image files anywhere
+*.jpg
+*.jpeg
+*.png
+*.webp
+!**/public/*.png
+!**/public/*.jpg
+!**/public/**/*.png
+!**/public/**/*.jpg
+
+# Logs
+*.log
+
+dataset/scripts/part-000001.zip
+
+# Kaggle staging & local working cache
+kaggle_working/
+smoke_test_staging/
+diag_staging/
+worker*_staging/
+.staging_*
+scripts/worker_tokens.json
+
+# Scratch and test temps
+scratch/
+_batch_test_tmp/
+_coord_test_tmp/
+scripts/_tmp_*
+scripts/_backup_*/
+tmp_*.json
+scripts/lease_backups/
+paper/result/manifest_audit/
+
+# Do NOT track manuscript PDFs or LaTeX auxiliary builds
+*.pdf
+*.aux
+*.out
+*.synctex*
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
