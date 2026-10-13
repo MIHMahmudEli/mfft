@@ -19,7 +19,7 @@ export default function DetectionSection() {
   const [loadingPhase, setLoadingPhase] = useState<string>("Analyzing image...");
   const [error, setError] = useState<string | null>(null);
   const [models, setModels] = useState<ModelOption[]>(FALLBACK_MODELS);
-  const [modelId, setModelId] = useState<string>("base");
+  const [modelId, setModelId] = useState<string>("large");
 
   // Restore saved model choice, then refresh the live list from the API
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function DetectionSection() {
       if (!data?.models?.length) return;
       setModels(data.models);
       const stillValid = data.models.some(
-        (m) => m.id === (saved ?? "base") && m.loaded
+        (m) => m.id === (saved ?? "large") && m.loaded
       );
       if (!stillValid && data.default) setModelId(data.default);
     });

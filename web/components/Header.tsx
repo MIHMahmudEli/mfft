@@ -4,7 +4,6 @@ import ThemeToggle from "./ThemeToggle";
 const NAV = [
   { href: "#detect", label: "Detect" },
   { href: "#how", label: "How It Works" },
-  { href: "#pricing", label: "Pricing" },
   { href: "/docs", label: "API Docs" },
 ];
 

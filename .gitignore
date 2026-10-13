@@ -85,3 +85,5 @@ paper/result/manifest_audit/
 *.blg
 *.fls
 *.fdb_latexmk
+paper/
+

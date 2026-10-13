@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this software or research artifacts in your research, please cite it as below."
+authors:
+  - family-names: "Hossain"
+    given-names: "Mohsin Ibna"
+    affiliation: "Department of Computer Science, American International University-Bangladesh, Dhaka, Bangladesh"
+    email: "23-50194-1@student.aiub.edu"
+  - family-names: "Muttakin"
+    given-names: "MD."
+    affiliation: "Department of Computer Science, American International University-Bangladesh, Dhaka, Bangladesh"
+    email: "23-50987-1@student.aiub.edu"
+  - family-names: "Hasan"
+    given-names: "Mohammad Mahmudul"
+    affiliation: "Department of Computer Science, American International University-Bangladesh, Dhaka, Bangladesh"
+    email: "m.hasan@aiub.edu"
+title: "MFFT: Multi-Frequency Fusion Transformer for Explainable AI-Generated Image Detection"
+version: "1.0.0"
+date-released: "2026-10-13"
+license: "MIT"
+repository-code: "https://github.com/MIHMahmudEli/mfft"
+url: "https://imageverify-ai.vercel.app"
+keywords:
+  - "ai-generated-image-detection"
+  - "deepfake-detection"
+  - "image-forensics"
+  - "frequency-analysis"
+  - "fourier-transform"
+  - "vision-transformer"
+  - "cross-attention"
+  - "frequency-guided-attention"
+  - "reproducible-research"
+abstract: >-
+  Official implementation, pretrained weights, and inference pipelines for the
+  Multi-Frequency Fusion Transformer (MFFT), a parameter-efficient vision architecture
+  for detecting AI-generated imagery and deepfakes across radial Fourier frequency sub-bands
+  using depthwise separable convolutions and Frequency-Guided Cross-Attention (FGA).

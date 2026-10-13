@@ -1,16 +1,15 @@
 """
 Download verified production checkpoints from Hugging Face Hub (MohsinElis/mfft-checkpoints)
 into model/checkpoints/production/ for local serving and containerized deployment.
+Repository is public: anonymous downloads work without an API token.
 """
+import os
 import shutil
+import sys
 from pathlib import Path
 from huggingface_hub import hf_hub_download
-import sys
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT))
-from scripts.list_active_runs import get_hf_token
-
 REPO_ID = "MohsinElis/mfft-checkpoints"
 TARGET_DIR = ROOT / "model" / "checkpoints" / "production"
 TARGET_DIR.mkdir(parents=True, exist_ok=True)
@@ -22,8 +21,8 @@ VARIANTS = {
 }
 
 def main():
-    token = get_hf_token()
-    print("Downloading full-scale 20-epoch production checkpoints from Hugging Face...")
+    token = os.environ.get("HF_TOKEN", None)
+    print("Downloading full-scale 20-epoch production checkpoints from Hugging Face (MohsinElis/mfft-checkpoints)...")
     for variant, repo_path in VARIANTS.items():
         dest = TARGET_DIR / f"{variant}.pt"
         print(f"  Fetching {variant} from {repo_path}...")

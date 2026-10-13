@@ -42,7 +42,7 @@ MODEL_INFO = {
     "large": {"params": "6.30M", "description": "Highest accuracy profile"},
 }
 model_registry: dict = {}
-DEFAULT_VARIANT = os.environ.get("MFFT_VARIANT", "base")
+DEFAULT_VARIANT = os.environ.get("MFFT_VARIANT", "large")
 IMAGE_SIZE = int(os.environ.get("MFFT_IMAGE_SIZE", "384"))
 DEMO_MODE = os.environ.get("MFFT_DEMO") == "1"
 

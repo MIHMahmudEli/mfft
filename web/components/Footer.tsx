@@ -38,11 +38,6 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#pricing" className="transition-colors hover:text-blue-600 dark:hover:text-cyan-400">
-                  Pricing Plans
-                </a>
-              </li>
-              <li>
                 <a href="/docs" className="transition-colors hover:text-blue-600 dark:hover:text-cyan-400">
                   API Documentation
                 </a>

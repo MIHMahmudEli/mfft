@@ -1,37 +1,39 @@
-# MFFT: Multi-Frequency Fusion Transformer for AI-Generated Image Detection
+# MFFT: Multi-Frequency Fusion Transformer for Explainable AI-Generated Image Detection
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.[DOI].svg)](https://doi.org/10.5281/zenodo.[DOI])
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg?style=flat&logo=pytorch)](https://pytorch.org/)
+[![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Checkpoints-yellow.svg)](https://huggingface.co/MohsinElis/mfft-checkpoints)
+[![Hugging Face Manifest](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Master%20Manifest-blue.svg)](https://huggingface.co/MohsinElis/mfft-master-manifest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Paper](https://img.shields.io/badge/Paper-In%20Submission-brightgreen.svg)]()
 [![Live Demo](https://img.shields.io/badge/Demo-ImageVerify%20AI-000000.svg?logo=vercel)](https://imageverify-ai.vercel.app/)
 [![API Status](https://img.shields.io/badge/API-Render%20Online-46E3B7.svg?logo=render)](https://mfft-detection-api.onrender.com/)
 
-Official PyTorch implementation of **Multi-Frequency Fusion Transformer (MFFT)**, an explainable deep architecture designed to detect AI-generated and deepfake images by analyzing localized artifacts across radial Fourier frequency bands.
+Official open-source PyTorch implementation, pretrained models, and evaluation pipelines for the **Multi-Frequency Fusion Transformer (MFFT)**, a parameter-efficient vision architecture designed to detect AI-generated imagery and deepfakes across radial Fourier frequency sub-bands using depthwise separable convolutions and Frequency-Guided Cross-Attention (FGA).
 
 ---
 
 ## 🌟 Key Highlights
 
-- **Frequency-Domain Forensic Representation**: Extracts radial Fourier frequency bands (Low, Mid, High) to uncover subtle generative grid discrepancies and spectral phase disruptions invisible in RGB pixel space.
-- **Frequency-Guided Cross-Attention (FGA)**: Cross-attends spatial features guided by frequency magnitude weights, directing the transformer's receptive field to artifact-dense frequency bands.
-- **Compact & High-Accuracy**:
-  - **MFFT-Tiny** (372K params): **98.59% accuracy**, **99.88% AUC-ROC** (<15ms latency).
-  - **MFFT-Base** (1.62M params): **98.58% accuracy**, **99.89% AUC-ROC** (balanced production default).
-  - **MFFT-Large** (6.30M params): **98.11% accuracy**, **99.68% AUC-ROC** (maximum forensic capacity).
-- **Outperforms 10 Competitive Baselines**: Evaluated against vision transformers, vision-language models, CNNs, and frequency baselines (CLIP, Swin-T, ViT-B/16, DeiT-S, EfficientNet-B0, ResNet-50, FreqDetect).
-- **Inherent Explainability**: Generates high-frequency spatial anomaly heatmaps and per-band contribution vectors with every inference.
-- **Robust Against Degradation**: Evaluated on JPEG compression (Q30–Q90), Gaussian blurring, and downscale-upscale perturbations.
+- **Frequency-Domain Forensic Representation**: Decomposes 2D Fast Fourier Transform (FFT) spectra into discrete radial annular sub-bands (Low, Mid, High), exposing subtle upsampling artifacts and spectral grid discrepancies imperceptible in spatial RGB pixel space.
+- **Frequency-Guided Cross-Attention (FGA)**: Cross-attends spatial features guided by spectral magnitude weights, directing the transformer's receptive field to artifact-dense frequency components.
+- **Extreme Parameter Efficiency**:
+  - **MFFT-Tiny** (372K params): **98.59% accuracy**, **99.88% AUC-ROC** (~12ms inference latency).
+  - **MFFT-Base** (1.62M params): **98.37% accuracy**, **99.87% AUC-ROC** (5-seed mean: **98.58% ± 0.13%**).
+  - **MFFT-Large** (6.30M params): **98.11% accuracy**, **99.68% AUC-ROC** (maximum forensic representation capacity).
+- **Comprehensive Benchmarks**: Rigorously evaluated on a frozen, stratified held-out benchmark of **18,000 unseen images** (84K train / 18K val / 18K test) against 10 baseline architectures including foundation models, Vision Transformers, and modern CNN backbones.
+- **Out-of-Distribution Generalization**: Evaluated under Leave-One-Generator-Out (LOGO) cross-generator validation across latent diffusion (SDXL, SD 1.5, GLIDE), autoregressive transformers (DALL-E 3), GANs (StyleGAN, ProGAN, BigGAN), and facial deepfakes (DFDC, Celeb-DF v2, FaceForensics++).
+- **Inherent Interpretability**: Produces high-resolution spatial forensic heatmaps and per-frequency band anomaly contribution breakdowns alongside confidence calibration.
 
 ---
 
 ## 🔬 Architecture Overview
 
 ```
-Input Image (384x384)
+Input Image (384x384 RGB)
          │
          ▼
 ┌────────────────────────────────────────────────────────┐
-│     Fourier Radial Decomposition (Low / Mid / High)     │
+│     Radial 2D-FFT Decomposition (Low / Mid / High)     │
 └──────────────┬──────────────────┬──────────────────┬───┘
                │                  │                  │
                ▼                  ▼                  ▼
@@ -45,8 +47,8 @@ Input Image (384x384)
                               ▼
        ┌─────────────────────────────────────────────────┐
        │    Frequency-Guided Cross-Attention (FGA)       │
-       │   - Learns spectral phase & magnitude weights   │
-       │   - Discovers spatial artifact correspondences  │
+       │   - Computes dynamic spectral cross-attention   │
+       │   - Discovers spatial-frequency correspondences │
        └──────────────────────┬──────────────────────────┘
                               │
                               ▼
@@ -64,25 +66,68 @@ Input Image (384x384)
 
 ## 📊 Benchmark Results
 
-Evaluated on the canonical frozen test benchmark of **18,000 held-out images** (balanced authentic vs. AI generators including Stable Diffusion, Midjourney, DALL-E 3, SDXL, BigGAN, and CelebDF):
+Evaluated on the frozen, canonical test split of **18,000 unseen images** (SHA-256: `e8db1a7249ef22fbf9fcb6e6659e9ecc5ebbc5d81430a268fce26546f23bdde2` hosted on [MohsinElis/mfft-master-manifest](https://huggingface.co/MohsinElis/mfft-master-manifest)):
 
-### 1. Proposed MFFT Variants vs. Baselines
+### 1. Proposed MFFT Family vs. Ten Baseline Models
 
-| Model | Parameters | Test Acc (%) | AUC-ROC (%) | Recall (%) | Specificity (%) | F1-Score (%) |
-|---|---|---|---|---|---|---|
-| **MFFT-Tiny (Ours)** | **372K** | **98.59** | **99.88** | 98.42 | 98.76 | **98.59** |
-| **MFFT-Base (Ours)** | **1.62M** | **98.58** | **99.89** | 98.51 | 98.65 | **98.58** |
-| **MFFT-Large (Ours)** | **6.30M** | **98.11** | **99.68** | 97.41 | 98.80 | **98.09** |
-| CLIP (ViT-B/32) | 87.9M | 95.83 | 99.12 | 95.20 | 96.46 | 95.81 |
-| Swin-T | 27.5M | 95.42 | 98.96 | 94.88 | 95.96 | 95.40 |
-| ViT-B/16 | 86.1M | 95.10 | 98.82 | 94.60 | 95.60 | 95.08 |
-| DeiT-Small | 22.1M | 94.76 | 98.54 | 93.90 | 95.62 | 94.73 |
-| ResNet-50 | 23.5M | 94.65 | 98.45 | 94.12 | 95.18 | 94.63 |
-| EfficientNet-B0 | 4.0M | 94.20 | 98.12 | 93.55 | 94.85 | 94.18 |
-| ResNet-18 | 11.2M | 93.85 | 97.90 | 93.10 | 94.60 | 93.82 |
-| LightViT | 5.1M | 92.40 | 96.85 | 91.80 | 93.00 | 92.38 |
-| SimpleCNN | 423K | 89.15 | 94.50 | 88.20 | 90.10 | 89.12 |
-| FreqDetect | 14.7K | 82.40 | 89.20 | 81.10 | 83.70 | 82.35 |
+| Model Architecture | Parameters | Input Res | Test Acc (%) | AUC-ROC (%) | Precision (%) | Recall (%) | F1-Score (%) | Specificity (%) | Loss |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **MFFT-Tiny (Proposed)** | **372,450** | 384x384 | **98.59** | **99.88** | 99.23 | 97.94 | **98.59** | 99.24 | 0.2232 |
+| **MFFT-Base (Proposed)** | **1,622,690** | 384x384 | **98.37** | **99.87** | 98.59 | 98.13 | **98.36** | 98.60 | 0.2258 |
+| **MFFT-Large (Proposed)** | **6,301,250** | 384x384 | **98.11** | **99.68** | 98.78 | 97.41 | **98.09** | 98.80 | 0.2362 |
+| SimpleCNN | 422,530 | 384x384 | 98.51 | 99.82 | 99.13 | 97.87 | 98.50 | 99.14 | 0.2342 |
+| FreqDetect | 14,658 | 384x384 | 50.00 | 49.95 | 50.00 | 100.00 | 66.67 | 0.00 | 0.6932 |
+| EfficientNet-B0 | 4,010,110 | 384x384 | 99.51 | 99.95 | 99.71 | 99.31 | 99.51 | 99.71 | 0.2070 |
+| ResNet-18 | 11,177,538 | 384x384 | 99.32 | 99.97 | 99.48 | 99.16 | 99.32 | 99.48 | 0.2110 |
+| ResNet-50 | 23,512,130 | 384x384 | 99.38 | 99.96 | 99.20 | 99.56 | 99.38 | 99.20 | 0.2142 |
+| Swin-T | 27,520,892 | 384x384 | 99.31 | 99.96 | 99.37 | 99.24 | 99.31 | 99.37 | 0.2108 |
+| LightViT | 5,084,418 | 384x384 | 95.42 | 99.26 | 98.47 | 92.27 | 95.27 | 98.57 | 0.2741 |
+| ViT-B/16 | 86,092,034 | 384x384 | 93.13 | 98.37 | 95.30 | 90.73 | 92.96 | 95.52 | 0.3103 |
+| DeiT-Small | 21,813,892 | 384x384 | 88.12 | 95.30 | 92.60 | 82.87 | 87.46 | 93.38 | 0.3831 |
+| CLIP ViT-B/32 | 87,924,226 | 384x384 | 85.76 | 92.66 | 88.53 | 82.17 | 85.23 | 89.36 | 0.4242 |
+
+### 2. Multi-Seed Replication (MFFT-Base Stability)
+
+| Run ID | Seed | Test Acc (%) | AUC-ROC (%) | Precision (%) | Recall (%) | F1-Score (%) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| `mfft_base` (Canonical) | 42 | 98.37 | 99.87 | 98.59 | 98.13 | 98.36 |
+| `mfft_base_seed42` | 42 | 98.66 | 99.91 | 99.03 | 98.28 | 98.65 |
+| `mfft_base_seed999` | 999 | 98.67 | 99.89 | 99.04 | 98.28 | 98.66 |
+| `mfft_base_seed1234` | 1234 | 98.68 | 99.90 | 99.08 | 98.28 | 98.67 |
+| `mfft_base_seed2026` | 2026 | 98.55 | 99.89 | 98.81 | 98.28 | 98.54 |
+| **Five-Seed Mean ± Std** | — | **98.58 ± 0.13** | **99.89 ± 0.02** | **98.91 ± 0.21** | **98.25 ± 0.07** | **98.58 ± 0.13** |
+
+### 3. Cross-Generator Generalization (LOGO Protocol)
+
+| Held-Out Family | Generator Sources | LOGO Accuracy (%) | LOGO AUC-ROC (%) |
+| :--- | :--- | :---: | :---: |
+| **Diffusion (SDXL)** | Stable Diffusion XL (SDXL) | **97.80** | **99.78** |
+| **Deepfakes** | FaceForensics++, DFDC, Celeb-DF v2 | **98.09** | **99.82** |
+| **GANs** | StyleGAN, ProGAN, BigGAN | **95.10** | **99.12** |
+
+### 4. Calibration & Robustness
+
+- **Expected Calibration Error (ECE)**: `0.0486` (reliable probabilistic predictions).
+- **Brier Score**: `0.0955`.
+- **JPEG Compression Stability**: Preserves `97.0%–98.0%` accuracy across JPEG qualities `Q40` to `Q95`.
+
+---
+
+## 📦 Model Zoo & Pretrained Weights
+
+Verified 20-epoch production weights are publicly hosted on Hugging Face Hub:
+
+| Model Variant | Parameters | File Size | Hugging Face Checkpoint Link | Local Destination |
+| :--- | :---: | :---: | :--- | :--- |
+| **MFFT-Tiny** | 372K | ~4.4 MB | [`MohsinElis/mfft-checkpoints/runs/mfft_tiny/checkpoints/best.pt`](https://huggingface.co/MohsinElis/mfft-checkpoints/resolve/main/runs/mfft_tiny/checkpoints/best.pt) | `model/checkpoints/production/tiny.pt` |
+| **MFFT-Base** | 1.62M | ~18.7 MB | [`MohsinElis/mfft-checkpoints/runs/mfft_base/checkpoints/best.pt`](https://huggingface.co/MohsinElis/mfft-checkpoints/resolve/main/runs/mfft_base/checkpoints/best.pt) | `model/checkpoints/production/base.pt` |
+| **MFFT-Large** | 6.30M | ~72.2 MB | [`MohsinElis/mfft-checkpoints/runs/mfft_large/checkpoints/best.pt`](https://huggingface.co/MohsinElis/mfft-checkpoints/resolve/main/runs/mfft_large/checkpoints/best.pt) | `model/checkpoints/production/large.pt` |
+
+To download all production checkpoints with a single command (no authentication required):
+
+```bash
+python scripts/download_production_models.py
+```
 
 ---
 
@@ -91,6 +136,7 @@ Evaluated on the canonical frozen test benchmark of **18,000 held-out images** (
 ### 1. Installation
 
 ```bash
+# Clone the repository
 git clone https://github.com/MIHMahmudEli/mfft.git
 cd mfft
 
@@ -98,47 +144,62 @@ cd mfft
 pip install -r model/requirements.txt
 ```
 
-### 2. Pretrained Model Loading
+### 2. Python Inference
 
 ```python
 import torch
+from PIL import Image
+import torchvision.transforms as T
 from model.src.model import build_mfft
 
-# Instantiate MFFT architecture (tiny, base, or large)
-model = build_mfft(variant="base", img_size=384, num_classes=2)
+# 1. Build model architecture (tiny, base, or large)
+model = build_mfft(variant="large", img_size=384, num_classes=2)
 
-# Load verified 20-epoch production weights
-checkpoint = torch.load("model/checkpoints/production/base.pt", map_location="cpu", weights_only=False)
+# 2. Load verified production weights
+checkpoint = torch.load("model/checkpoints/production/large.pt", map_location="cpu", weights_only=False)
 model.load_state_dict(checkpoint["model_state_dict"])
 model.eval()
 
-print("MFFT model loaded successfully!")
-```
-
-### 3. Running Inference on an Image
-
-```python
-from PIL import Image
-import torchvision.transforms as T
-
-# Standard preprocessing
-transform = T.Compose([
-    T.Resize((384, 384)),
-    T.ToTensor(),
-    T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-])
+# 3. Preprocessing (aspect-ratio preserving resize + center crop)
+def preprocess(img: Image.Image, img_size: int = 384):
+    w, h = img.size
+    target = img_size + 16
+    if w < h:
+        new_w, new_h = target, max(target, int(h * target / w))
+    else:
+        new_h, new_w = target, max(target, int(w * target / h))
+    img = img.resize((new_w, new_h), Image.Resampling.BILINEAR)
+    left = max(0, (new_w - img_size) // 2)
+    top = max(0, (new_h - img_size) // 2)
+    img = img.crop((left, top, left + img_size, top + img_size))
+    
+    transform = T.Compose([
+        T.ToTensor(),
+        T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+    return transform(img).unsqueeze(0)
 
 image = Image.open("sample.jpg").convert("RGB")
-tensor = transform(image).unsqueeze(0)
+tensor = preprocess(image)
 
 with torch.no_grad():
     outputs = model(tensor, return_features=True)
     logits = outputs["logits"] if isinstance(outputs, dict) else outputs
     probs = torch.softmax(logits, dim=-1)
-    
+
 ai_probability = probs[0, 1].item()
-print(f"AI-Generated Probability: {ai_probability * 100:.2f}%")
+print(f"Prediction: {'AI-Generated' if ai_probability > 0.5 else 'Authentic'}")
+print(f"Confidence: {ai_probability * 100:.2f}% AI Probability")
 ```
+
+---
+
+## 🌐 Live Demonstrations & Services
+
+- **Web Application**: [https://imageverify-ai.vercel.app/](https://imageverify-ai.vercel.app/) — Interactive OLED interface with real-time laser scan animation and multi-model switching.
+- **REST Inference API**: [https://mfft-detection-api.onrender.com/](https://mfft-detection-api.onrender.com/) — Production FastAPI microservice supporting single and batch image classification.
+- **Hugging Face Checkpoints**: [https://huggingface.co/MohsinElis/mfft-checkpoints](https://huggingface.co/MohsinElis/mfft-checkpoints) — Machine-readable GPU training and evaluation checkpoints.
+- **Master Manifest**: [https://huggingface.co/MohsinElis/mfft-master-manifest](https://huggingface.co/MohsinElis/mfft-master-manifest) — Frozen 120,000-image dataset split manifest.
 
 ---
 
@@ -148,56 +209,56 @@ print(f"AI-Generated Probability: {ai_probability * 100:.2f}%")
 .
 ├── model/
 │   ├── src/
-│   │   ├── model.py              # Core MFFT architecture & Frequency-Guided Attention
-│   │   ├── baselines.py          # 10 competitive baseline architectures
-│   │   ├── dataset.py            # Dataset loading, Fourier pre-filtering, and augmentations
-│   │   ├── train.py              # Multi-GPU AMP training engine
-│   │   ├── evaluate.py           # Evaluation metrics (AUC-ROC, F1, specificity)
-│   │   ├── robustness.py         # JPEG, blur, and resolution perturbation curves
-│   │   ├── calibration.py        # Temperature scaling, ECE, and reliability diagrams
-│   │   ├── stats.py              # Bootstrap confidence intervals & McNemar tests
-│   │   └── visualize.py          # Publication-ready figures and error distributions
+│   │   ├── model.py                  # Core MFFT architecture & Frequency-Guided Attention (FGA)
+│   │   ├── baselines.py              # Implementations of 10 baseline models
+│   │   ├── dataset.py                # Dataset loader with FFT pre-filtering and caching
+│   │   ├── train.py                  # Distributed AMP training engine
+│   │   ├── evaluate.py               # Evaluation metrics (AUC, F1, specificity, precision)
+│   │   ├── calibration.py            # Temperature scaling, ECE, and reliability metrics
+│   │   ├── robustness.py             # Perturbation analysis (JPEG, blur, downscale)
+│   │   ├── stats.py                  # Bootstrap confidence intervals and McNemar tests
+│   │   ├── logo_eval.py              # Leave-One-Generator-Out cross-generator evaluation
+│   │   └── visualize.py              # Publication figure generators
 │   ├── checkpoints/
-│   │   └── production/           # Verified 20-epoch weights (tiny, base, large)
+│   │   └── production/               # Pretrained weights (tiny.pt, base.pt, large.pt)
 │   └── requirements.txt
-├── api/                          # High-throughput FastAPI inference server
-│   ├── main.py
-│   ├── model_server.py
-│   └── schemas.py
-├── web/                          # Modern Next.js 14 web application
-│   ├── app/
-│   ├── components/
-│   └── public/samples/
-├── paper/
-│   ├── mfft_manuscript.tex       # Full IEEE-formatted manuscript source
-│   ├── result/tables/            # Benchmark CSV/LaTeX tables
-│   └── result/figures/           # 300 DPI publication figures
-├── compose.yaml                  # Multi-container production deployment
-├── Dockerfile.render             # Ultra-lightweight CPU container for cloud deployment
-├── DEPLOYMENT.md                 # Production deployment & operations guide
-└── LICENSE                       # MIT License
+├── api/                              # High-throughput FastAPI inference server
+│   ├── main.py                       # REST endpoints & CORS configuration
+│   ├── model_server.py               # Model loading & aspect-preserving inference
+│   └── schemas.py                    # Pydantic request/response schemas
+├── web/                              # Modern Next.js 14 web application
+│   ├── app/                          # App router and UI pages
+│   ├── components/                   # React components (laser scan, result cards)
+│   └── lib/                          # API client and TypeScript definitions
+├── scripts/
+│   ├── download_production_models.py # One-command checkpoint downloader
+│   ├── test_deployment_e2e.py        # End-to-end API verification suite
+│   └── deploy_hf_space.py            # Hugging Face Space packager
+├── kaggle_mfft_pipeline.ipynb        # Autonomous training and evaluation pipeline
+├── compose.yaml                      # Multi-container local/cloud deployment
+├── Dockerfile.render                 # Production container for cloud inference
+├── render.yaml                       # Infrastructure-as-code specification
+├── CITATION.cff                      # Zenodo DOI citation metadata
+├── .zenodo.json                      # Zenodo archival configuration
+├── DEPLOYMENT.md                     # Deployment and operations manual
+└── LICENSE                           # MIT License
 ```
-
----
-
-## 🌐 Live Demonstrations
-
-- **Web Application**: [https://imageverify-ai.vercel.app/](https://imageverify-ai.vercel.app/) (OLED Black UI with real-time laser scan animation)
-- **Inference API**: [https://mfft-detection-api.onrender.com/](https://mfft-detection-api.onrender.com/) (FastAPI REST service)
-- **Hugging Face Space**: [https://huggingface.co/spaces/MohsinElis/mfft-api](https://huggingface.co/spaces/MohsinElis/mfft-api)
 
 ---
 
 ## 📜 Citation
 
-If you find this work or codebase useful for your research, please cite:
+If you use this codebase, models, or research artifacts in your research, please cite:
 
 ```bibtex
-@article{hasan2026mfft,
-  title={MFFT: Multi-Frequency Fusion Transformer for Explainable AI-Generated Image Detection},
-  author={Hasan, Mohammad Mahmudul},
-  journal={arXiv preprint},
-  year={2026}
+@software{hossain2026mfft,
+  author       = {Mohsin Ibna Hossain and MD. Muttakin and Mohammad Mahmudul Hasan},
+  title        = {MFFT: Multi-Frequency Fusion Transformer for Explainable AI-Generated Image Detection},
+  year         = {2026},
+  publisher    = {Zenodo},
+  version      = {v1.0.0},
+  doi          = {10.5281/zenodo.[DOI]},
+  url          = {https://github.com/MIHMahmudEli/mfft}
 }
 ```
 

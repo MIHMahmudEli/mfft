@@ -106,8 +106,18 @@ class ModelServer:
         return result
 
     def _preprocess(self, image: Image.Image) -> torch.Tensor:
-        image = image.convert("RGB").resize(
-            (self.image_size, self.image_size), Image.Resampling.LANCZOS)
+        # Aspect-ratio preserving resize + center crop (matching training/eval pipeline)
+        w, h = image.size
+        target = self.image_size + 16
+        if w < h:
+            new_w, new_h = target, max(target, int(h * target / w))
+        else:
+            new_h, new_w = target, max(target, int(w * target / h))
+        image = image.convert("RGB").resize((new_w, new_h), Image.Resampling.BILINEAR)
+        left = max(0, (new_w - self.image_size) // 2)
+        top = max(0, (new_h - self.image_size) // 2)
+        image = image.crop((left, top, left + self.image_size, top + self.image_size))
+
         img_array = np.array(image, dtype=np.float32) / 255.0
 
         mean = np.array([0.485, 0.456, 0.406], dtype=np.float32)
