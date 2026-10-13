@@ -1,6 +1,6 @@
 # MFFT: Multi-Frequency Fusion Transformer for Explainable AI-Generated Image Detection
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.[DOI].svg)](https://doi.org/10.5281/zenodo.[DOI])
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23339178.svg)](https://doi.org/10.5281/zenodo.23339178)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg?style=flat&logo=pytorch)](https://pytorch.org/)
 [![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Checkpoints-yellow.svg)](https://huggingface.co/MohsinElis/mfft-checkpoints)
 [![Hugging Face Manifest](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Master%20Manifest-blue.svg)](https://huggingface.co/MohsinElis/mfft-master-manifest)
@@ -257,7 +257,7 @@ If you use this codebase, models, or research artifacts in your research, please
   year         = {2026},
   publisher    = {Zenodo},
   version      = {v1.0.0},
-  doi          = {10.5281/zenodo.[DOI]},
+  doi          = {10.5281/zenodo.23339178},
   url          = {https://github.com/MIHMahmudEli/mfft}
 }
 ```
