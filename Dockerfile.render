@@ -1,0 +1,36 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    MFFT_IMAGE_SIZE=384 \
+    MFFT_CHECKPOINT_DIR=/app/model/checkpoints/production
+
+# Install minimal OS dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1 libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install lightweight PyTorch CPU-only wheels (<200MB vs 2.5GB GPU) to fit Render 512MB RAM
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+# Install FastAPI and server dependencies
+RUN pip install --no-cache-dir \
+    fastapi>=0.109.0 \
+    "uvicorn[standard]>=0.27.0" \
+    python-multipart>=0.0.6 \
+    pydantic>=2.5.0 \
+    Pillow>=10.0.0 \
+    numpy>=1.24.0
+
+# Copy application source & verified production weights
+COPY api/ /app/api/
+COPY model/src/ /app/model/src/
+COPY model/checkpoints/production/ /app/model/checkpoints/production/
+
+EXPOSE 8000
+
+# Single worker ensures low memory footprint within Render Free Tier limit (512MB)
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
