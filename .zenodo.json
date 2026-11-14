@@ -1,0 +1,30 @@
+{
+  "title": "MFFT: Multi-Frequency Fusion Transformer for Explainable AI-Generated Image Detection",
+  "upload_type": "software",
+  "description": "Official open-source implementation, pretrained weights, and inference pipelines for the Multi-Frequency Fusion Transformer (MFFT), a parameter-efficient vision architecture for detecting AI-generated imagery and facial manipulation deepfakes across radial Fourier frequency sub-bands.",
+  "creators": [
+    {
+      "name": "Hossain, Mohsin Ibna",
+      "affiliation": "Department of Computer Science, American International University-Bangladesh"
+    },
+    {
+      "name": "Muttakin, MD.",
+      "affiliation": "Department of Computer Science, American International University-Bangladesh"
+    },
+    {
+      "name": "Hasan, Mohammad Mahmudul",
+      "affiliation": "Department of Computer Science, American International University-Bangladesh"
+    }
+  ],
+  "access_right": "open",
+  "license": "MIT",
+  "keywords": [
+    "ai-generated-image-detection",
+    "deepfake-detection",
+    "image-forensics",
+    "frequency-analysis",
+    "fourier-transform",
+    "vision-transformer",
+    "cross-attention"
+  ]
+}
