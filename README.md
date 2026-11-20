@@ -11,6 +11,11 @@
 
 Official open-source PyTorch implementation, verified pretrained models, evaluation pipelines, and reproducibility artifacts for the **Multi-Frequency Fusion Transformer (MFFT)**, an explainable vision architecture designed to detect AI-generated imagery and deepfakes across radial Fourier frequency sub-bands using depthwise separable convolutions and Frequency-Guided Attention (FGA).
 
+> **Associated Journal Publication**:  
+> *"MFFT: Multi-Frequency Fusion Transformer for AI-Generated Image Detection"*  
+> **Mohsin Ibna Hossain, MD. Muttakin, and Mohammad Mahmudul Hasan**  
+> *Elsevier: Machine Learning with Applications (MLWA)*
+
 ---
 
 ## 🌟 Key Highlights
@@ -239,30 +244,31 @@ print(f"Confidence: {ai_probability * 100:.2f}% AI Probability")
 │   │   ├── stats.py                  # Bootstrap confidence intervals and McNemar tests
 │   │   ├── logo_eval.py              # Leave-One-Generator-Out cross-generator evaluation
 │   │   └── visualize.py              # Publication figure generators
-│   ├── checkpoints/
-│   │   └── production/               # Pretrained weights (tiny.pt, base.pt, large.pt)
 │   └── requirements.txt
 ├── api/                              # High-throughput FastAPI inference server
 │   ├── main.py                       # REST endpoints & CORS configuration
 │   ├── model_server.py               # Model loading & aspect-preserving inference
-│   └── schemas.py                    # Pydantic request/response schemas
+│   ├── schemas.py                    # Pydantic request/response schemas
+│   ├── requirements.txt              # API dependencies
+│   └── Dockerfile                    # Container definition for FastAPI
 ├── web/                              # Modern Next.js 14 web application
 │   ├── app/                          # App router and UI pages
 │   ├── components/                   # React components (laser scan, result cards)
 │   └── lib/                          # API client and TypeScript definitions
 ├── scripts/
-│   ├── download_production_models.py # One-command checkpoint downloader
+│   ├── download_production_models.py # One-command checkpoint downloader from Hugging Face
 │   ├── test_deployment_e2e.py        # End-to-end API verification suite
+│   ├── test_results_registry_validation.py # Registry validation test suite
 │   └── deploy_hf_space.py            # Hugging Face Space packager
 ├── results/
 │   └── canonical_results_registry.json # Comprehensive machine-readable experimental registry
-├── paper/
-│   ├── elsevier_mlwa/            # Elsevier MLWA camera-ready manuscript & figures
-│   └── final/                    # Production figure/table generation scripts & source data
 ├── pipelines/
 │   ├── kaggle_mfft_pipeline.ipynb    # Autonomous training and evaluation pipeline
 │   └── kaggle_mfft_pipeline.py       # Standalone pipeline export & verification script
-├── compose.yaml                      # Multi-container local/cloud deployment
+├── compose.yaml                      # Multi-container orchestration (api + web + nginx)
+├── nginx.conf                        # Reverse proxy configuration
+├── Dockerfile.api                    # Standalone API container
+├── Dockerfile.web                    # Standalone Web container
 ├── Dockerfile.render                 # Production container for cloud inference
 ├── render.yaml                       # Infrastructure-as-code specification
 ├── CITATION.cff                      # Zenodo DOI citation metadata
@@ -277,8 +283,17 @@ print(f"Confidence: {ai_probability * 100:.2f}% AI Probability")
 If you use this codebase, models, or research artifacts in your research, please cite:
 
 ```bibtex
-@software{hossain2026mfft,
-  author       = {Mohsin Ibna Hossain and MD. Muttakin and Mohammad Mahmudul Hasan},
+@article{hossain2026mfft,
+  title={MFFT: Multi-Frequency Fusion Transformer for AI-Generated Image Detection},
+  author={Hossain, Mohsin Ibna and Muttakin, MD. and Hasan, Mohammad Mahmudul},
+  journal={Machine Learning with Applications},
+  year={2026},
+  publisher={Elsevier},
+  note={Official Checkpoints: \url{https://huggingface.co/MohsinElis/mfft-checkpoints}}
+}
+
+@software{hossain2026mfft_code,
+  author       = {Hossain, Mohsin Ibna and Muttakin, MD. and Hasan, Mohammad Mahmudul},
   title        = {MFFT: Multi-Frequency Fusion Transformer for Explainable AI-Generated Image Detection},
   year         = {2026},
   publisher    = {Zenodo},
